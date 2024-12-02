@@ -1,5 +1,5 @@
-function Home(){
-    return <h1>Pagina principal! 👍</h1>
+function Home() {
+  return <h1>Pagina principal! 👍</h1>;
 }
 
-export default Home
+export default Home;
