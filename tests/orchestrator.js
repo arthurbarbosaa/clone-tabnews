@@ -18,4 +18,6 @@ async function waitFroAllServices() {
   }
 }
 
-export default { waitFroAllServices };
+const orcherstrator = { waitFroAllServices };
+
+export default orcherstrator;
