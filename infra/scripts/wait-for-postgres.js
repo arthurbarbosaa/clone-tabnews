@@ -1,5 +1,4 @@
 const { exec } = require("node:child_process");
-const { copyFileSync } = require("node:fs");
 
 function checkPostgres() {
   exec("docker exec postgres-dev pg_isready", handleReturn);
