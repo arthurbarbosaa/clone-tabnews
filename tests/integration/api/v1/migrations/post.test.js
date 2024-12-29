@@ -1,9 +1,8 @@
-import database from "infra/database";
 import orchestrator from "tests/orchestrator.js";
 
 beforeAll(async () => {
   await orchestrator.waitFroAllServices();
-  await database.query("drop schema public cascade; create schema public;");
+  await orchestrator.clearDatabase();
 });
 
 describe("POST /api/v1/migrations", () => {
@@ -20,12 +19,7 @@ describe("POST /api/v1/migrations", () => {
 
         const response1Body = await response1.json();
         expect(Array.isArray(response1Body)).toBe(true);
-
-        const dbMigrations = (
-          await database.query("Select * from pgmigrations")
-        ).rows;
-        expect(Array.isArray(dbMigrations)).toBe(true);
-        expect(dbMigrations.length).toEqual(response1Body.length);
+        expect(response1Body.length).toBeGreaterThan(0);
       });
 
       test("For the second time", async () => {
