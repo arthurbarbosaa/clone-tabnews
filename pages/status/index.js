@@ -38,7 +38,6 @@ function DatabaseStatus() {
   if (!isLoading && data) {
     databaseInfo = (
       <>
-        <h2>Database:</h2>
         <div>Versão: {data.dependencies.database.postgres_version}</div>
         <div>
           Conexões abertas: {data.dependencies.database.using_connections}
@@ -50,5 +49,10 @@ function DatabaseStatus() {
     );
   }
 
-  return databaseInfo;
+  return (
+    <>
+      <h2>Database:</h2>
+      <div>{databaseInfo}</div>
+    </>
+  );
 }
