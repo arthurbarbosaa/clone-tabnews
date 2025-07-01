@@ -10,87 +10,67 @@ beforeAll(async () => {
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
     test("With with exact case match", async () => {
-      const response1 = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "SameCaseUsername",
-          email: "same.case@email.com",
-          password: "123",
-        }),
+      const createdUser = await orchestrator.createUser({
+        username: "SameCaseUsername",
       });
 
-      expect(response1.status).toBe(201);
-
-      const response2 = await fetch(
+      const response = await fetch(
         "http://localhost:3000/api/v1/users/SameCaseUsername",
         {
           method: "GET",
         },
       );
 
-      const response2Body = await response2.json();
-      expect(response2Body).toEqual({
-        id: response2Body.id,
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        id: responseBody.id,
         username: "SameCaseUsername",
-        email: "same.case@email.com",
-        password: response2Body.password,
-        created_at: response2Body.created_at,
-        updated_at: response2Body.updated_at,
+        email: createdUser.email,
+        password: responseBody.password,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
       });
-      expect(uuidVersion(response2Body.id)).toBe(4);
-      expect(Date.parse(response2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
-      expect(response2.status).toBe(200);
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      expect(response.status).toBe(200);
     });
     test("With case mismatch", async () => {
-      const response1 = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "MismatchCaseUsername",
-          email: "mismatch.case@email.com",
-          password: "123",
-        }),
+      const createdUser = await orchestrator.createUser({
+        username: "MismatchCaseUsername",
       });
 
-      expect(response1.status).toBe(201);
-
-      const response2 = await fetch(
+      const response = await fetch(
         "http://localhost:3000/api/v1/users/mismatchcaseusername",
         {
           method: "GET",
         },
       );
 
-      const response2Body = await response2.json();
-      expect(response2Body).toEqual({
-        id: response2Body.id,
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
+        id: responseBody.id,
         username: "MismatchCaseUsername",
-        email: "mismatch.case@email.com",
-        password: response2Body.password,
-        created_at: response2Body.created_at,
-        updated_at: response2Body.updated_at,
+        email: createdUser.email,
+        password: responseBody.password,
+        created_at: responseBody.created_at,
+        updated_at: responseBody.updated_at,
       });
-      expect(uuidVersion(response2Body.id)).toBe(4);
-      expect(Date.parse(response2Body.created_at)).not.toBeNaN();
-      expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
-      expect(response2.status).toBe(200);
+      expect(uuidVersion(responseBody.id)).toBe(4);
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
+      expect(response.status).toBe(200);
     });
     test("With nonexistent user", async () => {
-      const response2 = await fetch(
+      const response = await fetch(
         "http://localhost:3000/api/v1/users/NonExistentUsername",
         {
           method: "GET",
         },
       );
 
-      const response2Body = await response2.json();
-      expect(response2Body).toEqual({
+      const responseBody = await response.json();
+      expect(responseBody).toEqual({
         name: "NotFoundError",
         message: "O username informado não foi encontrado.",
         action: "Verifique o username informado e tente novamente.",
