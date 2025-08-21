@@ -69,57 +69,6 @@ describe("GET /api/v1/user", () => {
         httpOnly: true,
       });
     });
-    test("With nonexistent session", async () => {
-      const nonexistentToken =
-        "09042c4046029262670b9f054a28d0461a0b21c90eac3451fb402cde8f8010ad956933b0c572994cc5c2655595fe7dd5";
-
-      const response = await fetch("http://localhost:3000/api/v1/user", {
-        headers: {
-          Cookie: `session_id=${nonexistentToken}`,
-        },
-      });
-
-      expect(response.status).toBe(401);
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        name: "UnauthorizedError",
-        message: "Usuário não possui sessão ativa.",
-        action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
-      });
-    });
-    test("With expired session", async () => {
-      jest.useFakeTimers({
-        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
-      });
-
-      const createdUser = await orchestrator.createUser({
-        username: "UserWithExpiredSession",
-      });
-
-      const sessionObject = await orchestrator.createSession(createdUser.id);
-
-      jest.useRealTimers();
-
-      const response = await fetch("http://localhost:3000/api/v1/user", {
-        headers: {
-          Cookie: `session_id=${sessionObject.token}`,
-        },
-      });
-
-      expect(response.status).toBe(401);
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        name: "UnauthorizedError",
-        message: "Usuário não possui sessão ativa.",
-        action: "Verifique se este usuário está logado e tente novamente.",
-        status_code: 401,
-      });
-    });
     test("With valid session half expired", async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS / 2),
@@ -156,6 +105,83 @@ describe("GET /api/v1/user", () => {
         renewedSessionObject.expires_at.getTime() -
           renewedSessionObject.updated_at.getTime(),
       ).toBeLessThanOrEqual(session.EXPIRATION_IN_MILLISECONDS);
+    });
+    test("With nonexistent session", async () => {
+      const nonexistentToken =
+        "09042c4046029262670b9f054a28d0461a0b21c90eac3451fb402cde8f8010ad956933b0c572994cc5c2655595fe7dd5";
+
+      const response = await fetch("http://localhost:3000/api/v1/user", {
+        headers: {
+          Cookie: `session_id=${nonexistentToken}`,
+        },
+      });
+
+      expect(response.status).toBe(401);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "UnauthorizedError",
+        message: "Usuário não possui sessão ativa.",
+        action: "Verifique se este usuário está logado e tente novamente.",
+        status_code: 401,
+      });
+
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
+      });
+    });
+    test("With expired session", async () => {
+      jest.useFakeTimers({
+        now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
+      });
+
+      const createdUser = await orchestrator.createUser({
+        username: "UserWithExpiredSession",
+      });
+
+      const sessionObject = await orchestrator.createSession(createdUser.id);
+
+      jest.useRealTimers();
+
+      const response = await fetch("http://localhost:3000/api/v1/user", {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+
+      expect(response.status).toBe(401);
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "UnauthorizedError",
+        message: "Usuário não possui sessão ativa.",
+        action: "Verifique se este usuário está logado e tente novamente.",
+        status_code: 401,
+      });
+
+      // Set-Cookie assertions
+      const parsedSetCookie = setCookieParser(response, {
+        map: true,
+      });
+
+      expect(parsedSetCookie.session_id).toEqual({
+        name: "session_id",
+        value: "invalid",
+        maxAge: -1,
+        path: "/",
+        httpOnly: true,
+      });
     });
   });
 });
