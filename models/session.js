@@ -61,14 +61,14 @@ async function create(userId) {
 async function renew(sessionId) {
   const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS);
 
-  const renewdSessionObject = runUpdateQuery(sessionId, expiresAt);
+  const renewdSessionObject = await runUpdateQuery(sessionId, expiresAt);
   return renewdSessionObject;
 }
 
 async function expireById(sessionId) {
   const expiresAt = new Date(Date.now() - EXPIRATION_IN_MILLISECONDS);
 
-  const expiredSessionObject = runUpdateQuery(sessionId, expiresAt);
+  const expiredSessionObject = await runUpdateQuery(sessionId, expiresAt);
   return expiredSessionObject;
 }
 
