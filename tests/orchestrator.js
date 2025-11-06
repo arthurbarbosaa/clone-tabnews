@@ -70,6 +70,11 @@ async function getLastEmail() {
   const emailListResponse = await fetch(`${emailHttpUrl}/messages`);
   const emailListBody = await emailListResponse.json();
   const lastEmailItem = emailListBody[emailListBody.length - 1];
+
+  if (!lastEmailItem) {
+    return null;
+  }
+
   const emailTextResponse = await fetch(
     `${emailHttpUrl}/messages/${lastEmailItem.id}.plain`,
   );
@@ -78,7 +83,7 @@ async function getLastEmail() {
   return lastEmailItem;
 }
 
-const orcherstrator = {
+const orchestrator = {
   waitFroAllServices,
   clearDatabase,
   runPendingMigrations,
@@ -88,4 +93,4 @@ const orcherstrator = {
   getLastEmail,
 };
 
-export default orcherstrator;
+export default orchestrator;
