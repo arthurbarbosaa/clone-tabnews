@@ -26,20 +26,28 @@ async function create(userId) {
   }
 }
 
-async function findOneByUserId(userId) {
-  const result = await database.query({
-    text: `
-    SELECT
-      *
-    FROM
-      user_activation_tokens
-    WHERE
-      user_id = $1
-    LIMIT 1
-    ;`,
-    values: [userId],
-  });
-  return result.rows[0];
+async function findOneValidById(tokenId) {
+  const validToken = await runSelectQuery(tokenId);
+
+  return validToken;
+
+  async function runSelectQuery(tokenId) {
+    const result = await database.query({
+      text: `
+      SELECT
+        *
+      FROM
+        user_activation_tokens
+      WHERE
+        id = $1
+        AND expires_at > NOW()
+        AND used_at IS NULL
+      LIMIT 1
+      ;`,
+      values: [tokenId],
+    });
+    return result.rows[0];
+  }
 }
 
 async function sendEmailToUser(user, activationToken) {
@@ -60,7 +68,7 @@ Equipe BoilerSaaS
 
 const activation = {
   create,
-  findOneByUserId,
+  findOneValidById,
   sendEmailToUser,
 };
 
