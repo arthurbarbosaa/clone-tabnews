@@ -1,6 +1,8 @@
 import database from "infra/database";
 import webserver from "infra/webserver";
 import email from "infra/email";
+import user from "./user";
+import { UnauthorizedError } from "infra/errors";
 
 const EXPIRATION_IN_MILLISECONDS = 15 * 60 * 1000; // 15 minutes
 
@@ -28,6 +30,13 @@ async function create(userId) {
 
 async function findOneValidById(tokenId) {
   const validToken = await runSelectQuery(tokenId);
+
+  if (!validToken) {
+    throw new UnauthorizedError({
+      message: "O token de ativação está errado ou expirado",
+      action: "Faça a ativação da sua conta novamente",
+    });
+  }
 
   return validToken;
 
@@ -66,10 +75,41 @@ Equipe BoilerSaaS
   });
 }
 
+async function markTokenAsUsed(tokenId) {
+  const updatedToken = await runUpdateQuery(tokenId);
+
+  return updatedToken;
+
+  async function runUpdateQuery(tokenId) {
+    const result = await database.query({
+      text: `
+      UPDATE
+        user_activation_tokens
+      SET
+        used_at = timezone('utc', now()),
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+      RETURNING
+        *
+      ;`,
+      values: [tokenId],
+    });
+    return result.rows[0];
+  }
+}
+
+async function activateUserByUserId(userId) {
+  const actvatedUser = await user.setFeatures(userId, ["create:session"]);
+  return actvatedUser;
+}
+
 const activation = {
   create,
   findOneValidById,
   sendEmailToUser,
+  markTokenAsUsed,
+  activateUserByUserId,
 };
 
 export default activation;
