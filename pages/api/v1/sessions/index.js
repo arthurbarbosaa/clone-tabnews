@@ -1,7 +1,10 @@
 import authentication from "models/authentication";
+import authorization from "models/authorization";
 import controller from "infra/controller.js";
 import { createRouter } from "next-connect";
 import session from "models/session";
+
+import { ForbiddenError } from "infra/errors";
 
 const router = createRouter();
 
@@ -18,6 +21,13 @@ async function postHandler(request, response) {
     userInputValues.email,
     userInputValues.password,
   );
+
+  if (!authorization.can(authenticatedUser, "create:session")) {
+    throw new ForbiddenError({
+      message: "Você não tem permissão para fazer login.",
+      action: `Contate o suporte caso você acredite que isso seja um erro.`,
+    });
+  }
 
   const newSession = await session.create(authenticatedUser.id);
 
