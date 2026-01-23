@@ -6,11 +6,11 @@ import activation from "models/activation";
 const router = createRouter();
 
 router.use(controller.injectAnonymousOrUser);
-router.post(controller.canRequest("create:user"), postHandrer);
+router.post(controller.canRequest("create:user"), postHandler);
 
 export default router.handler(controller.errorHandlers);
 
-async function postHandrer(request, response) {
+async function postHandler(request, response) {
   const userInputValues = request.body;
   const newUser = await user.create(userInputValues);
 
