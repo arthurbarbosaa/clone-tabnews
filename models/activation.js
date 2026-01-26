@@ -43,7 +43,6 @@ async function findOneValidById(tokenId) {
   return validToken;
 
   async function runSelectQuery(tokenId) {
-    console.log("Finding token:", tokenId);
     const result = await database.query({
       text: `
       SELECT
