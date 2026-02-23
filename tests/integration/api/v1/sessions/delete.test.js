@@ -4,7 +4,7 @@ import { version as uuidVersion } from "uuid";
 import session from "models/session";
 
 beforeAll(async () => {
-  await orchestrator.waitFroAllServices();
+  await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
 });

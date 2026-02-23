@@ -4,7 +4,7 @@ import webserver from "infra/webserver";
 import user from "models/user";
 
 beforeAll(async () => {
-  await orchestrator.waitFroAllServices();
+  await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
   await orchestrator.deleteAllEmails();
@@ -37,9 +37,7 @@ describe("Use case: registration flow (all successful)", () => {
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
       username: "registration-flow-user",
-      email: "registration.flow@email.com",
       features: ["read:activation_token"],
-      password: createUserResponseBody.password,
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
     });

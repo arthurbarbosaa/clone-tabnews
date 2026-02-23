@@ -4,7 +4,7 @@ import activation from "models/activation";
 import user from "models/user";
 
 beforeAll(async () => {
-  await orchestrator.waitFroAllServices();
+  await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
 });

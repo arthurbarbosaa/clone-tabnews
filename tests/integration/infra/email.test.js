@@ -2,7 +2,7 @@ import email from "infra/email";
 import orcherstrator from "tests/orchestrator";
 
 beforeAll(async () => {
-  await orcherstrator.waitFroAllServices();
+  await orcherstrator.waitForAllServices();
 });
 
 describe("infra/email.js", () => {

@@ -8,11 +8,11 @@ import activation from "models/activation";
 
 const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
 
-async function waitFroAllServices() {
-  await waitFroWebServer();
+async function waitForAllServices() {
+  await waitForWebServer();
   await waitForEmailServer();
 
-  async function waitFroWebServer() {
+  async function waitForWebServer() {
     return retry(fetchStatusPage, {
       retries: 100,
       maxTimeout: 1000,
@@ -99,7 +99,7 @@ async function addFeaturesToUser(userObject, features) {
 }
 
 const orchestrator = {
-  waitFroAllServices,
+  waitForAllServices,
   clearDatabase,
   runPendingMigrations,
   createUser,
