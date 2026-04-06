@@ -4,7 +4,7 @@ import { version as uuidVersion } from "uuid";
 import session from "models/session";
 
 beforeAll(async () => {
-  await orchestrator.waitFroAllServices();
+  await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.runPendingMigrations();
 });
@@ -95,6 +95,8 @@ describe("POST /api/v1/sessions", () => {
         email: "correct@email.com",
         password: "correct-password",
       });
+
+      await orchestrator.activateUser(createdUser);
 
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
