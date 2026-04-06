@@ -7,7 +7,7 @@ function getOrigin() {
     return `https://${process.env.VERCEL_URL}`;
   }
 
-  return "https://boilersaas.com.br";
+  return "https://arthurbarbosadev.com";
 }
 
 const webserver = {
