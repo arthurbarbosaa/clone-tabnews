@@ -63,7 +63,7 @@ async function findOneValidById(tokenId) {
 
 async function sendEmailToUser(user, activationToken) {
   await email.send({
-    from: "BoilerSaaS <contato@boilersaas.com.br>",
+    from: "arthurbarbosadev <contato@arthurbarbosadev.com>",
     to: user.email,
     subject: "Ative seu cadastro",
     text: `${user.username}, clique no link abaixo para ativar seu cadastro.
@@ -72,7 +72,7 @@ async function sendEmailToUser(user, activationToken) {
 ${webserver.origin}/cadastro/ativar/${activationToken.id}
 
 Atenciosamente,
-Equipe BoilerSaaS
+Equipe arthurbarbosadev
 `,
   });
 }
