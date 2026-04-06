@@ -46,9 +46,7 @@ describe("PATCH /api/v1/users/[username]", () => {
     test("With nonexistent `username`", async () => {
       const createdUser = await orchestrator.createUser();
       await orchestrator.activateUser(createdUser);
-      const userSessionObject = await orchestrator.createSession(
-        createdUser.id,
-      );
+      const userSessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/NonExistentUsername`,
@@ -78,9 +76,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "user2",
       });
       await orchestrator.activateUser(createdUser2);
-      const user2SessionObject = await orchestrator.createSession(
-        createdUser2.id,
-      );
+      const user2SessionObject = await orchestrator.createSession(createdUser2);
 
       const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: "PATCH",
@@ -111,9 +107,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "userB",
       });
       await orchestrator.activateUser(createdUser2);
-      const user2SessionObject = await orchestrator.createSession(
-        createdUser2.id,
-      );
+      const user2SessionObject = await orchestrator.createSession(createdUser2);
 
       const response = await fetch(`${webserver.origin}/api/v1/users/userA`, {
         method: "PATCH",
@@ -145,9 +139,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         email: "email2@email.com",
       });
       await orchestrator.activateUser(createdUser2);
-      const user2SessionObject = await orchestrator.createSession(
-        createdUser2.id,
-      );
+      const user2SessionObject = await orchestrator.createSession(createdUser2);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser2.username}`,
@@ -178,9 +170,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         username: "uniqueUsername1",
       });
       await orchestrator.activateUser(createdUser);
-      const userSessionObject = await orchestrator.createSession(
-        createdUser.id,
-      );
+      const userSessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/uniqueUsername1`,
@@ -216,9 +206,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         email: "uniqueEmail1@email.com",
       });
       await orchestrator.activateUser(createdUser);
-      const userSessionObject = await orchestrator.createSession(
-        createdUser.id,
-      );
+      const userSessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,
@@ -258,9 +246,7 @@ describe("PATCH /api/v1/users/[username]", () => {
         password: "newPassword1",
       });
       await orchestrator.activateUser(createdUser);
-      const userSessionObject = await orchestrator.createSession(
-        createdUser.id,
-      );
+      const userSessionObject = await orchestrator.createSession(createdUser);
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,
@@ -311,7 +297,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       const activatedPrivlegedUser =
         await orchestrator.activateUser(privlegedUser);
       const privlegedUserSessionObject = await orchestrator.createSession(
-        activatedPrivlegedUser.id,
+        activatedPrivlegedUser,
       );
 
       await orchestrator.addFeaturesToUser(activatedPrivlegedUser, [
